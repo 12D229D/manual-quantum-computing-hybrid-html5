@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manual de Computación Cuántica Híbrida & Algoritmos NISQ</title>
+  <meta name="description" content="Manual interactivo de Computación Cuántica Híbrida y Algoritmos NISQ: VQE, QAOA, QPU+CPU Loop, Mitigación de Errores (ZNE, Readout) y Simulador en Vivo.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="site-header" id="site-header">
+    <div class="header-inner container">
+      <div class="brand-group">
+        <div class="brand-badge" aria-hidden="true">
+          <span class="qubit-symbol">|ψ⟩</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-eyebrow">Codex Capa 4 · Quantum Hub</span>
+          <span class="brand-title">Quantum Hybrid Lab</span>
+        </div>
+      </div>
+
+      <nav class="main-nav" id="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><button class="nav-btn active" data-tab="tab-theory" id="nav-btn-theory">Fundamentos & Álgebra</button></li>
+          <li><button class="nav-btn" data-tab="tab-algorithms" id="nav-btn-algorithms">Algoritmos NISQ</button></li>
+          <li><button class="nav-btn" data-tab="tab-simulator" id="nav-btn-simulator">Simulador Híbrido (VQE/QAOA)</button></li>
+          <li><button class="nav-btn" data-tab="tab-mitigation" id="nav-btn-mitigation">Mitigación de Errores</button></li>
+          <li><button class="nav-btn" data-tab="tab-qasm" id="nav-btn-qasm">OpenQASM 3.0 Bridge</button></li>
+          <li><button class="nav-btn" data-tab="tab-quiz" id="nav-btn-quiz">Autoevaluación</button></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <div class="status-indicator" title="Motor cuántico local activo">
+          <span class="pulse-dot"></span>
+          <span class="status-text" id="engine-status">Q-Core Ready</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section with single H1 -->
+  <section class="hero-section" id="hero-section">
+    <div class="container hero-content">
+      <div class="hero-badge">Capa 4 · Computación Cuántica Híbrida & Era NISQ</div>
+      <h1 class="hero-h1">Manual Interactivo de Computación Cuántica Híbrida y Algoritmos NISQ</h1>
+      <p class="hero-desc">
+        Guía integral e interactiva para dominar el paradigma híbrido cuántico-clásico. Explora el bucle de co-procesamiento CPU + QPU, ejecuta optimizaciones variacionales (VQE y QAOA) con simulación matricial en tiempo real, analiza técnicas de mitigación de ruido decoherente y exporta circuitos compilados a OpenQASM 3.0 para IBM Qiskit y Google Cirq.
+      </p>
+      <div class="hero-quick-stats">
+        <div class="stat-card">
+          <span class="stat-num">NISQ</span>
+          <span class="stat-label">Noisy Intermediate-Scale</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">VQE / QAOA</span>
+          <span class="stat-label">Ansatz Variacionales</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">ZNE & REM</span>
+          <span class="stat-label">Mitigación de Errores</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">OpenQASM 3</span>
+          <span class="stat-label">Interoperabilidad QPU</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout -->
+  <main class="main-content container" id="main-content">
+
+    <!-- SEARCH & FILTER GLOBAL BAR -->
+    <section class="search-filter-card glass-panel" aria-label="Buscador interactivo del manual">
+      <div class="search-wrapper">
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="manual-search-input" placeholder="Buscar conceptos (ej: Dirac, Ansatz, COBYLA, ZNE, decoherencia, Hamiltoniano)..." aria-label="Buscar en el manual">
+      </div>
+      <div class="filter-pills" id="filter-pills-container">
+        <button class="filter-pill active" data-category="all">Todos</button>
+        <button class="filter-pill" data-category="teoria">Teoría Dirac</button>
+        <button class="filter-pill" data-category="algoritmo">Algoritmos</button>
+        <button class="filter-pill" data-category="optimizador">Optimizadores</button>
+        <button class="filter-pill" data-category="ruido">Mitigación Ruido</button>
+        <button class="filter-pill" data-category="hardware">Hardware QPU</button>
+      </div>
+    </section>
+
+    <!-- TAB 1: TEORÍA Y FUNDAMENTOS -->
+    <section class="tab-pane active" id="tab-theory" role="tabpanel">
+      <div class="section-heading">
+        <span class="section-tag">Fundamentos Matemáticos</span>
+        <h2 class="section-h2">Espacio de Hilbert, Notación de Dirac y Puertas Cuánticas</h2>
+        <p class="section-intro">El estado de un qubit puro se representa como un vector unitario en un espacio de Hilbert bidimensional complejo ℋ₂ ≅ ℂ².</p>
+      </div>
+
+      <div class="cards-grid-2col">
+        <!-- Dirac & Qubit -->
+        <article class="quantum-card glass-panel filterable-item" data-tags="teoria algebra dirac qubit">
+          <div class="card-icon-header">
+            <span class="card-chip">Notación Bra-Ket</span>
+            <h3>Vector de Estado y Esfera de Bloch</h3>
+          </div>
+          <p>
+            Cualquier estado de un qubit puro |ψ⟩ puede descomponerse en la base computacional canónica {|0⟩, |1⟩}:
+          </p>
+          <div class="math-display">
+            |ψ⟩ = α |0⟩ + β |1⟩ = cos(θ/2) |0⟩ + e^(iϕ) sin(θ/2) |1⟩
+          </div>
+          <p class="card-note">
+            Donde α, β ∈ ℂ con condición de normalización |α|² + |β|² = 1. Los ángulos esféricos θ ∈ [0, π] y ϕ ∈ [0, 2π) localizan un punto sobre la <strong>Esfera de Bloch</strong>.
+          </p>
+
+          <div class="bloch-interactive-box">
+            <div class="bloch-controls">
+              <label for="bloch-theta">Ángulo Polar θ (0 → π rad): <span id="theta-val">0.00</span></label>
+              <input type="range" id="bloch-theta" min="0" max="3.14159" step="0.05" value="0">
+              <label for="bloch-phi">Ángulo Azimutal ϕ (0 → 2π rad): <span id="phi-val">0.00</span></label>
+              <input type="range" id="bloch-phi" min="0" max="6.28318" step="0.05" value="0">
+            </div>
+            <div class="bloch-readout">
+              <div class="prob-bar-container">
+                <span class="prob-label">P(|0⟩): <strong id="prob-0-text">100%</strong></span>
+                <div class="prob-progress"><div class="prob-fill cyan" id="prob-0-bar" style="width: 100%;"></div></div>
+              </div>
+              <div class="prob-bar-container">
+                <span class="prob-label">P(|1⟩): <strong id="prob-1-text">0%</strong></span>
+                <div class="prob-progress"><div class="prob-fill magenta" id="prob-1-bar" style="width: 0%;"></div></div>
+              </div>
+              <div class="vector-preview" id="bloch-vector-label">
+                |ψ⟩ = 1.000 |0⟩ + (0.000 + 0.000i) |1⟩
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Puertas Cuánticas y Matrices Pauli -->
+        <article class="quantum-card glass-panel filterable-item" data-tags="teoria algebra matrices pauli puertas">
+          <div class="card-icon-header">
+            <span class="card-chip">Álgebra de Operadores</span>
+            <h3>Matrices de Pauli y Puertas Unitarias</h3>
+          </div>
+          <p>
+            Las transformaciones cuánticas son transformaciones lineales unitarias U†U = I. El conjunto generador de operadores hermíticos viene dado por la base de Pauli:
+          </p>
+          <div class="pauli-matrix-grid">
+            <div class="pauli-tile" data-gate="I">
+              <span class="pauli-name">I (Identidad)</span>
+              <code>[ 1  0 ]<br>[ 0  1 ]</code>
+            </div>
+            <div class="pauli-tile" data-gate="X">
+              <span class="pauli-name">σ_x (NOT Cuántico)</span>
+              <code>[ 0  1 ]<br>[ 1  0 ]</code>
+            </div>
+            <div class="pauli-tile" data-gate="Y">
+              <span class="pauli-name">σ_y (Fase & Flip)</span>
+              <code>[ 0 -i ]<br>[ i  0 ]</code>
+            </div>
+            <div class="pauli-tile" data-gate="Z">
+              <span class="pauli-name">σ_z (Phase Flip)</span>
+              <code>[ 1  0 ]<br>[ 0 -1 ]</code>
+            </div>
+            <div class="pauli-tile" data-gate="H">
+              <span class="pauli-name">H (Hadamard)</span>
+              <code>1/√2 [ 1  1 ]<br>&nbsp;&nbsp;&nbsp;&nbsp;[ 1 -1 ]</code>
+            </div>
+            <div class="pauli-tile" data-gate="CNOT">
+              <span class="pauli-name">CX (Entrelazamiento)</span>
+              <code>4×4 Control-NOT<br>|c,t⟩ → |c, c⊕t⟩</code>
+            </div>
+          </div>
+
+          <div class="callout-box">
+            <strong>Teorema de No-Clonación:</strong> Es imposible crear una copia idéntica de un estado cuántico arbitrario desconocido |ψ⟩ mediante un operador unitario U(|ψ⟩|0⟩) ≠ |ψ⟩|ψ⟩.
+          </div>
+        </article>
+
+        <!-- Bucle Híbrido CPU + QPU -->
+        <article class="quantum-card glass-panel span-full filterable-item" data-tags="algoritmo hardware bucle cpu qpu cobyla spsa">
+          <div class="card-icon-header">
+            <span class="card-chip">Paradigma Híbrido</span>
+            <h3>Arquitectura del Bucle Cuántico-Clásico (QPU + CPU Loop)</h3>
+          </div>
+          <p>
+            En la era NISQ, los procesadores cuánticos no son computadores autónomos, sino <em>aceleradores co-procesadores de dominio específico</em> (QPU) coordinados por una CPU clásica de alto rendimiento.
+          </p>
+
+          <div class="hybrid-loop-diagram">
+            <div class="loop-node cpu-node">
+              <div class="node-icon">💻</div>
+              <h4>Host Clásico (CPU / HPC)</h4>
+              <ul>
+                <li>Define el Hamiltoniano H = ∑ c_i P_i</li>
+                <li>Inicializa parámetros variacionales θ⃗</li>
+                <li>Ejecuta optimizador numérico (COBYLA, SPSA, Gradiente)</li>
+                <li>Recibe valor esperado medido ⟨H⟩_θ y actualiza θ⃗</li>
+              </ul>
+            </div>
+
+            <div class="loop-arrows">
+              <div class="arrow-forward">
+                <span>Parámetros θ⃗_k & Circuito OpenQASM</span>
+                <span class="arrow-symbol">➔</span>
+              </div>
+              <div class="arrow-backward">
+                <span class="arrow-symbol">⬅</span>
+                <span>Histogramas de medición & ⟨H⟩</span>
+              </div>
+            </div>
+
+            <div class="loop-node qpu-node">
+              <div class="node-icon">⚛️</div>
+              <h4>Coprocesador Cuántico (QPU NISQ)</h4>
+              <ul>
+                <li>Prepara estado de referencia |ψ₀⟩ = |0⟩^(⊗n)</li>
+                <li>Aplica circuito parametrizado U(θ⃗) (Ansatz)</li>
+                <li>Mide en bases de Pauli (σ_x, σ_y, σ_z)</li>
+                <li>Repite N_shots veces para muestrear frecuencias</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="finops-warning-box">
+            <div class="finops-icon">💡</div>
+            <div class="finops-body">
+              <h5>Optimización FinOps en la Capa 4</h5>
+              <p>
+                Cada invocación a la QPU real (ej. IBM Quantum Runtime o Google Quantum AI) consume segundos valiosos de cuota gratuita. Mediante pre-simulación local en WebAssembly/JS y optimizadores con baja demanda de muestras (como SPSA con diferencias finitas simultáneas), se minimiza drásticamente el coste operativo antes del envío final al hardware.
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- TAB 2: ALGORITMOS NISQ COMPARATIVA -->
+    <section class="tab-pane" id="tab-algorithms" role="tabpanel">
+      <div class="section-heading">
+        <span class="section-tag">Catálogo NISQ</span>
+        <h2 class="section-h2">Algoritmos Cuánticos de Escala Intermedia con Ruido</h2>
+        <p class="section-intro">Comparativa técnica de profundidad de circuito, escalabilidad, aplicabilidad y tolerancia a ruido decoherente.</p>
+      </div>
+
+      <!-- Comparison Matrix Table -->
+      <div class="glass-panel table-container filterable-item" data-tags="algoritmo vqe qaoa qae qkd nisq comparativa">
+        <table class="quantum-table" id="nisq-comparison-table">
+          <thead>
+            <tr>
+              <th>Algoritmo</th>
+              <th>Propósito Principal</th>
+              <th>Estructura del Ansatz</th>
+              <th>Profundidad Típica</th>
+              <th>Tolerancia a Ruido</th>
+              <th>Complejidad QPU</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>VQE</strong> (Variational Quantum Eigensolver)</td>
+              <td>Química Cuántica, energía del estado fundamental molecular (H2, LiH).</td>
+              <td>UCCSD / Hardware-Efficient (Ry-Rz + CNOT)</td>
+              <td><span class="badge depth-low">Baja / Moderada O(N)</span></td>
+              <td><span class="badge tol-high">Alta (Auto-mitigante)</span></td>
+              <td>2 - 20 Qubits NISQ</td>
+            </tr>
+            <tr>
+              <td><strong>QAOA</strong> (Quantum Approximate Optimization)</td>
+              <td>Optimización Combinatoria (Max-Cut, TSP, QUBO, Knapsack).</td>
+              <td>Capas alternadas de Mezclador e^(-iβ B) y Coste e^(-iγ C)</td>
+              <td><span class="badge depth-med">Media O(p · |E|)</span></td>
+              <td><span class="badge tol-med">Media</span></td>
+              <td>10 - 100 Qubits NISQ</td>
+            </tr>
+            <tr>
+              <td><strong>QAE</strong> (Quantum Amplitude Estimation)</td>
+              <td>Finanzas Cuánticas (Pricing de opciones, Value at Risk, Monte Carlo).</td>
+              <td>Amplificación de amplitud + Estimación de Fase (QFT inversa)</td>
+              <td><span class="badge depth-high">Alta O(2^m)</span></td>
+              <td><span class="badge tol-low">Baja (Sensible a ruido)</span></td>
+              <td>Requiere QEC / Early-FTQC</td>
+            </tr>
+            <tr>
+              <td><strong>QKD</strong> (BB84 / E91)</td>
+              <td>Criptografía Cuántica y distribución incondicional de llaves simétricas.</td>
+              <td>Preparación en bases conjugadas de fotones individuales</td>
+              <td><span class="badge depth-low">Mínima (Puertas 1-qubit)</span></td>
+              <td><span class="badge tol-high">Muy Alta (Tasa QBER)</span></td>
+              <td>Hardware de Canales Ópticos</td>
+            </tr>
+            <tr>
+              <td><strong>VQLS</strong> (Variational Quantum Linear Solver)</td>
+              <td>Solución variacional de sistemas lineales masivos A|x⟩ = |b⟩.</td>
+              <td>Descomposición lineal de unitarias + Hadamard Tests</td>
+              <td><span class="badge depth-med">Media</span></td>
+              <td><span class="badge tol-med">Media</span></td>
+              <td>4 - 32 Qubits NISQ</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cards Grid of Deep-Dive -->
+      <div class="cards-grid-2col mt-4">
+        <!-- VQE Detail -->
+        <article class="quantum-card glass-panel filterable-item" data-tags="algoritmo vqe quimica variacional">
+          <div class="card-icon-header">
+            <span class="card-chip">Química Cuántica</span>
+            <h3>Principio Variacional y Teorema de Rayleigh-Ritz</h3>
+          </div>
+          <p>
+            El algoritmo VQE se sustenta en el principio variacional cuántico, el cual garantiza que para cualquier estado de prueba parametrizado |ψ(θ⃗)⟩, el valor esperado de un Hamiltoniano H está acotado inferiormente por la energía del estado fundamental E₀:
+          </p>
+          <div class="math-display">
+            ⟨H⟩_θ = ⟨ψ(θ⃗)|H|ψ(θ⃗)⟩ / ⟨ψ(θ⃗)|ψ(θ⃗)⟩ ≥ E₀
+          </div>
+          <p>
+            Al minimizar ⟨H⟩_θ variando clásicamente los parámetros θ⃗, el sistema converge monótonamente hacia el autoestado de mínima energía.
+          </p>
+        </article>
+
+        <!-- QAOA Detail -->
+        <article class="quantum-card glass-panel filterable-item" data-tags="algoritmo qaoa optimizacion maxcut ising">
+          <div class="card-icon-header">
+            <span class="card-chip">Grafos & Max-Cut</span>
+            <h3>QAOA y la Aproximación Adiabática</h3>
+          </div>
+          <p>
+            QAOA discretiza la evolución adiabática continua en p pasos de tiempo mediante la fórmula de Trotter. Alterna dos operadores unitarios no conmutativos:
+          </p>
+          <div class="math-display">
+            |γ, β⟩ = ∏_(k=1)^p e^(-i β_k B) e^(-i γ_k C) |+⟩^(⊗n)
+          </div>
+          <p>
+            Donde C = ∑_(i,j) 1/2(I - Z_i Z_j) codifica el problema de corte máximo del grafo, y B = ∑_i X_i es el Hamiltoniano transversal de mezcla.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- TAB 3: SIMULADOR HÍBRIDO INTERACTIVO (VQE / QAOA) -->
+    <section class="tab-pane" id="tab-simulator" role="tabpanel">
+      <div class="section-heading">
+        <span class="section-tag">Laboratorio En Vivo</span>
+        <h2 class="section-h2">Simulador Cuántico Híbrido: Optimización Variacional</h2>
+        <p class="section-intro">Ejecuta en tu navegador la simulación del bucle QPU+CPU en tiempo real para encontrar el estado fundamental con diferentes ansätze y optimizadores clásicos.</p>
+      </div>
+
+      <div class="simulator-layout">
+        <!-- Control Panel -->
+        <aside class="sim-sidebar glass-panel">
+          <h3 class="panel-title">Parámetros del Bucle</h3>
+
+          <div class="form-group">
+            <label for="sim-algorithm-select">Algoritmo Cuántico:</label>
+            <select id="sim-algorithm-select" class="quantum-select">
+              <option value="vqe_h2">VQE: Molécula de Hidrógeno (H₂ - Modelo Minimal)</option>
+              <option value="vqe_ising">VQE: Cadena Transversal de Ising (2 Qubits)</option>
+              <option value="qaoa_maxcut">QAOA: Max-Cut en Grafo Triangular (3 Qubits)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sim-ansatz-select">Tipo de Ansatz:</label>
+            <select id="sim-ansatz-select" class="quantum-select">
+              <option value="hardware_efficient">Hardware-Efficient (Ry + CNOT + Ry)</option>
+              <option value="real_amplitudes">Real Amplitudes (Ry + Entanglers)</option>
+              <option value="qaoa_alternating">QAOA Trotterized Layers (Cost + Mixer)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sim-optimizer-select">Optimizador Clásico (CPU):</label>
+            <select id="sim-optimizer-select" class="quantum-select">
+              <option value="cobyla">COBYLA (Sin gradientes / Rápido)</option>
+              <option value="spsa">SPSA (Robusto a Ruido de Disparo)</option>
+              <option value="gradient_descent">Descenso por Gradiente (Parameter Shift)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sim-shots-input">Disparos de Muestreo (Shots): <span id="shots-val-label">1024</span></label>
+            <input type="range" id="sim-shots-input" min="128" max="8192" step="128" value="1024">
+            <small class="help-text">Menos disparos = Mayor ruido estadístico (ruido de Poisson).</small>
+          </div>
+
+          <div class="form-group">
+            <label for="sim-noise-level">Nivel de Ruido Físico (Despolarizante): <span id="noise-val-label">0.00 (Ideal)</span></label>
+            <input type="range" id="sim-noise-level" min="0" max="0.15" step="0.01" value="0.00">
+          </div>
+
+          <div class="form-group">
+            <label for="sim-max-iter">Iteraciones Máximas: <span id="iter-val-label">35</span></label>
+            <input type="range" id="sim-max-iter" min="10" max="80" step="5" value="35">
+          </div>
+
+          <div class="sim-actions">
+            <button id="btn-run-simulation" class="btn-primary-quantum">
+              <span class="btn-icon">⚡</span> Iniciar Bucle Híbrido
+            </button>
+            <button id="btn-reset-simulation" class="btn-secondary-quantum">
+              Reiniciar Estado
+            </button>
+          </div>
+
+          <div class="sim-status-box" id="sim-status-box">
+            <span class="badge badge-idle" id="sim-badge-state">Listo para ejecutar</span>
+            <p id="sim-status-msg">Selecciona parámetros y presiona "Iniciar Bucle Híbrido".</p>
+          </div>
+        </aside>
+
+        <!-- Visualizer Area -->
+        <div class="sim-main-view">
+          <!-- Live Metrics Bar -->
+          <div class="metrics-bar glass-panel">
+            <div class="metric-item">
+              <span class="metric-title">Iteración Actual</span>
+              <span class="metric-value" id="metric-iter">0 / 35</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-title">Energía Medida ⟨H⟩</span>
+              <span class="metric-value font-mono" id="metric-energy">-- Ha</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-title">Energía Teórica Mínima</span>
+              <span class="metric-value font-mono highlight-gold" id="metric-exact">-1.1373 Ha</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-title">Error Relativo</span>
+              <span class="metric-value font-mono" id="metric-error">-- %</span>
+            </div>
+          </div>
+
+          <!-- Convergence Chart Canvas -->
+          <div class="glass-panel canvas-card">
+            <div class="canvas-header">
+              <h3>Curva de Convergencia Energética (Bucle CPU-QPU)</h3>
+              <div class="canvas-legend">
+                <span class="legend-dot cyan"></span> ⟨H⟩ Medido (QPU)
+                <span class="legend-dot gold"></span> E₀ Exacta
+              </div>
+            </div>
+            <div class="canvas-container">
+              <canvas id="convergence-canvas" width="760" height="280" aria-label="Gráfica de convergencia del valor esperado de energía respecto a las iteraciones"></canvas>
+            </div>
+          </div>
+
+          <!-- Circuit Diagram & Statevector -->
+          <div class="sim-subgrid mt-3">
+            <div class="glass-panel circuit-card">
+              <div class="card-icon-header">
+                <span class="card-chip">Esquema del Ansatz</span>
+                <h4>Circuito Parametrizado U(θ)</h4>
+              </div>
+              <div class="circuit-wire-viewer" id="circuit-wire-viewer">
+                <!-- Dynamic SVG circuit representation rendered in app.js -->
+              </div>
+            </div>
+
+            <div class="glass-panel hist-card">
+              <div class="card-icon-header">
+                <span class="card-chip">Distribución de Estados</span>
+                <h4>Probabilidades de Medición</h4>
+              </div>
+              <div class="hist-bars-container" id="hist-bars-container">
+                <!-- Dynamically populated bitstrings -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: MITIGACIÓN DE ERRORES NISQ -->
+    <section class="tab-pane" id="tab-mitigation" role="tabpanel">
+      <div class="section-heading">
+        <span class="section-tag">Física del Ruido</span>
+        <h2 class="section-h2">Técnicas de Mitigación de Errores (QEM) en la Era NISQ</h2>
+        <p class="section-intro">Sin corrección de errores tolerante a fallos (FTQC), las técnicas de mitigación de errores permiten extraer valores esperados libres de sesgo con sobrecarga polinómica de muestreo.</p>
+      </div>
+
+      <div class="cards-grid-2col">
+        <!-- ZNE Interactive -->
+        <article class="quantum-card glass-panel filterable-item" data-tags="ruido mitigacion zne extrapolacion">
+          <div class="card-icon-header">
+            <span class="card-chip">Zero-Noise Extrapolation</span>
+            <h3>Extrapolación a Ruido Cero (ZNE)</h3>
+          </div>
+          <p>
+            ZNE escala artificialmente el ruido del circuito aplicando factores de amplificación λ ∈ {1, 3, 5} (mediante doblado unitario U → U U† U). Luego ajusta una curva polinomial o de Richardson para extrapolar al límite ideal λ → 0:
+          </p>
+          <div class="zne-interactive-widget">
+            <div class="zne-controls">
+              <label for="zne-noise-slider">Ruido Base de la QPU (ε₀): <span id="zne-noise-val">2.5%</span></label>
+              <input type="range" id="zne-noise-slider" min="0.5" max="8.0" step="0.5" value="2.5">
+              <button id="btn-run-zne" class="btn-sm-quantum mt-2">Calcular Extrapolación ZNE</button>
+            </div>
+            <div class="zne-canvas-box mt-3">
+              <canvas id="zne-canvas" width="480" height="220" aria-label="Gráfico de extrapolación a ruido cero"></canvas>
+            </div>
+            <div class="zne-results-readout" id="zne-results-readout">
+              <span>Valor Sin Mitigar (λ=1): <strong class="text-danger" id="zne-raw-val">--</strong></span>
+              <span>Valor Mitigado ZNE (λ=0): <strong class="text-success" id="zne-mit-val">--</strong></span>
+              <span>Valor Teórico Puro: <strong class="text-cyan" id="zne-ideal-val">1.000</strong></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Readout Error Mitigation -->
+        <article class="quantum-card glass-panel filterable-item" data-tags="ruido mitigacion readout rem matriz inversion">
+          <div class="card-icon-header">
+            <span class="card-chip">Readout Error Mitigation</span>
+            <h3>Mitigación de Error de Medición (REM)</h3>
+          </div>
+          <p>
+            Durante la lectura en resonadores superconductores o trampas de iones, un qubit en |0⟩ puede registrarse erróneamente como |1⟩ con probabilidad P(1|0), y viceversa.
+          </p>
+          <p>
+            Se calibra una <strong>matriz de respuesta o confusión M</strong> preparando y midiendo los 2^n estados computacionales. El vector de probabilidades mitigado se obtiene invirtiendo la matriz:
+          </p>
+          <div class="math-display">
+            P_ideal = M^(-1) P_medido
+          </div>
+
+          <div class="matrix-interactive-viewer">
+            <h5>Matriz de Confusión Calibrada (2 Qubits):</h5>
+            <div class="confusion-matrix-grid">
+              <div class="cm-cell header">Base</div><div class="cm-cell header">|00⟩</div><div class="cm-cell header">|01⟩</div><div class="cm-cell header">|10⟩</div><div class="cm-cell header">|11⟩</div>
+              <div class="cm-cell header">|00⟩</div><div class="cm-cell">0.96</div><div class="cm-cell">0.02</div><div class="cm-cell">0.02</div><div class="cm-cell">0.00</div>
+              <div class="cm-cell header">|01⟩</div><div class="cm-cell">0.03</div><div class="cm-cell">0.94</div><div class="cm-cell">0.01</div><div class="cm-cell">0.02</div>
+              <div class="cm-cell header">|10⟩</div><div class="cm-cell">0.02</div><div class="cm-cell">0.01</div><div class="cm-cell">0.95</div><div class="cm-cell">0.02</div>
+              <div class="cm-cell header">|11⟩</div><div class="cm-cell">0.01</div><div class="cm-cell">0.03</div><div class="cm-cell">0.02</div><div class="cm-cell">0.94</div>
+            </div>
+            <p class="card-note mt-2">
+              Al aplicar corrección matricial por inversión por mínimos cuadrados o pseudo-inversa regularizada, la fidelidad de lectura promedio aumenta en un 15-28% en procesadores IBM Eagle y Heron.
+            </p>
+          </div>
+        </article>
+
+        <!-- Decoherencia T1 vs T2 -->
+        <article class="quantum-card glass-panel span-full filterable-item" data-tags="ruido hardware decoherencia t1 t2 qpu">
+          <div class="card-icon-header">
+            <span class="card-chip">Física de Qubits Superconductores</span>
+            <h3>Tiempos de Decoherencia: Relajación Longitudinal (T₁) vs Desfasamiento Transversal (T₂)</h3>
+          </div>
+          <div class="t1t2-grid">
+            <div class="t1t2-box">
+              <h4>T₁ · Tiempo de Relajación Térmica</h4>
+              <p>
+                Representa el tiempo característico que tarda el qubit en perder su energía y decaer espontáneamente del estado excitado |1⟩ al estado fundamental de equilibrio |0⟩.
+              </p>
+              <div class="math-display">
+                P₁(t) = e^(-t / T₁)
+              </div>
+              <span class="tech-tag">IBM Quantum Típico: ~150 - 300 µs</span>
+            </div>
+
+            <div class="t1t2-box">
+              <h4>T₂ · Tiempo de Desfasamiento de Ramsey (T₂* / T₂)</h4>
+              <p>
+                Mide la pérdida de coherencia de fase cuántica relativa entre las superposiciones (α|0⟩ + β|1⟩) inducida por fluctuaciones de campo magnético y fluctuadores de dos niveles (TLS).
+              </p>
+              <div class="math-display">
+                1/T₂ = 1/(2T₁) + 1/T_ϕ
+              </div>
+              <span class="tech-tag">Límite fundamental: T₂ ≤ 2T₁</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- TAB 5: OPENQASM 3.0 BRIDGE -->
+    <section class="tab-pane" id="tab-qasm" role="tabpanel">
+      <div class="section-heading">
+        <span class="section-tag">Interoperabilidad & Transpilación</span>
+        <h2 class="section-h2">Puente OpenQASM 3.0 & Qiskit / Cirq Generator</h2>
+        <p class="section-intro">Genera código formal y sintácticamente válido para enviar a procesadores cuánticos en la nube o ejecutar en simuladores de alta velocidad.</p>
+      </div>
+
+      <div class="qasm-studio-layout">
+        <div class="qasm-controls-panel glass-panel">
+          <h3>Configurador del Circuito</h3>
+          <div class="form-group">
+            <label for="qasm-template-select">Plantilla del Circuito:</label>
+            <select id="qasm-template-select" class="quantum-select">
+              <option value="bell">Estado de Bell (Entrelazamiento Puro |Φ+⟩)</option>
+              <option value="ghz">Estado GHZ Tripartito (|000⟩ + |111⟩)/√2</option>
+              <option value="vqe_ansatz">Ansatz VQE Parametrizado (2 Qubits, Ry-Rz-CNOT)</option>
+              <option value="qaoa_cut">Circuito QAOA Max-Cut (Grafo K3)</option>
+              <option value="teleport">Protocolo de Teleportación Cuántica</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="qasm-target-format">Formato de Salida:</label>
+            <select id="qasm-target-format" class="quantum-select">
+              <option value="openqasm3">OpenQASM 3.0 (Estándar Abierto)</option>
+              <option value="qiskit">IBM Qiskit 1.x (Python SDK)</option>
+              <option value="cirq">Google Quantum AI Cirq (Python SDK)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="qasm-param-theta">Parámetro Variacional θ (Radianes): <span id="qasm-theta-display">0.785 (π/4)</span></label>
+            <input type="range" id="qasm-param-theta" min="0" max="6.28318" step="0.05" value="0.785">
+          </div>
+
+          <button id="btn-copy-code" class="btn-primary-quantum mt-2">
+            <span class="btn-icon">📋</span> Copiar al Portapapeles
+          </button>
+
+          <div class="qasm-meta-info mt-3">
+            <div class="meta-row"><span>Número de Qubits:</span> <strong id="qasm-nqubits">2</strong></div>
+            <div class="meta-row"><span>Profundidad (Depth):</span> <strong id="qasm-depth">3</strong></div>
+            <div class="meta-row"><span>Puertas 2-Qubits:</span> <strong id="qasm-cx-count">1</strong></div>
+          </div>
+        </div>
+
+        <div class="qasm-code-panel glass-panel">
+          <div class="code-header">
+            <span class="code-lang-label" id="code-lang-badge">OPENQASM 3.0</span>
+            <span class="code-status-pill">Sintaxis Validada</span>
+          </div>
+          <pre class="code-pre"><code id="code-output-block" class="font-mono"></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: QUIZ INTERACTIVO -->
+    <section class="tab-pane" id="tab-quiz" role="tabpanel">
+      <div class="section-heading">
+        <span class="section-tag">Evaluación de Competencias</span>
+        <h2 class="section-h2">Autoevaluación en Computación Cuántica Híbrida y NISQ</h2>
+        <p class="section-intro">Pon a prueba tu comprensión de la Capa 4 de Cómputo Cuántico: VQE, matrices de Pauli, optimizadores clásicos y mitigación de ruido.</p>
+      </div>
+
+      <div class="quiz-container glass-panel">
+        <div class="quiz-header">
+          <div class="quiz-progress-info">
+            <span id="quiz-question-counter">Pregunta 1 de 5</span>
+            <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill" style="width: 20%;"></div></div>
+          </div>
+          <div class="quiz-score-badge">Puntaje: <span id="quiz-current-score">0</span> pts</div>
+        </div>
+
+        <div class="quiz-card-body" id="quiz-card-body">
+          <h3 class="quiz-question-text" id="quiz-question-text">Cargando pregunta...</h3>
+          <div class="quiz-options-list" id="quiz-options-list">
+            <!-- Dynamic option buttons rendered via app.js -->
+          </div>
+          <div class="quiz-feedback-box hidden" id="quiz-feedback-box">
+            <p id="quiz-feedback-text"></p>
+          </div>
+        </div>
+
+        <div class="quiz-footer">
+          <button id="btn-quiz-next" class="btn-primary-quantum" disabled>Siguiente Pregunta ➔</button>
+          <button id="btn-quiz-restart" class="btn-secondary-quantum hidden">Reiniciar Cuestionario</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div class="footer-col">
+        <div class="footer-logo">Codex · Capa 4 Quantum Hub</div>
+        <p class="footer-text">
+          Manual técnico interactivo y educativo de Computación Cuántica Híbrida, compilación OpenQASM 3.0 y mitigación de errores para algoritmos NISQ.
+        </p>
+      </div>
+      <div class="footer-col">
+        <h4>Ecosistema Tecnológico</h4>
+        <ul class="footer-links">
+          <li><span>IBM Quantum Runtime & Qiskit 1.x</span></li>
+          <li><span>Google Quantum AI Cirq & qsim</span></li>
+          <li><span>OpenQASM 3.0 Standard Specification</span></li>
+          <li><span>Algoritmos VQE, QAOA, ZNE y REM</span></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Especificación Arquitectónica</h4>
+        <ul class="footer-links">
+          <li><span>Versión: <strong>v1.0.0</strong></span></li>
+          <li><span>Stack: Vanilla HTML5 / CSS3 HSL / ES2024</span></li>
+          <li><span>Arquitectura: SPA Desacoplada (LOA)</span></li>
+          <li><span>Licencia: Open Knowledge Codex</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <p>© 2026 Portafolio Codex · Documentación Interactiva Cuántica · Cumplimiento Estricto de DESIGN.md</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
